@@ -250,7 +250,7 @@ function mapInv(invData){//for inv format specifically
 		"<div class='container coinAmmo'>"+
 		"<div class='slotid'>"+
 		"<div class='item coinAmmoSlot'>"+
-			"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
+			"<img style='width:20px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
 		"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
 	"</div>";
@@ -258,7 +258,7 @@ function mapInv(invData){//for inv format specifically
 	}else if (count<=58){
 		pageInventory="<div class='slotid'>"+
 		"<div class='item coinAmmoSlot'>"+
-			"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
+			"<img style='width:20px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
 		"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
 	"</div>";
@@ -282,11 +282,10 @@ function mapStorage(invData){//only shows stack number
 
 function mapEquipment(invData){//Hides stack number
 	var pageInventory ="<div class='slotid'>"+
-		"&nbsp;" + 
 		"<div class='item itemslotEquip'>"+
 			"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
 		"</div>"+
-		"<div align='right'>&nbsp;</div>"+
+		"<div align='right'></div>"+
 	"</div>";
 	pageHeader=pageHeader+pageInventory;
 	count=count+1;
@@ -331,7 +330,7 @@ body {
 	min-width:466px;
 	position: absolute;
 	inset-inline-start:20px;
-	inset-block-start:100px;
+	inset-block-start:120px;
 }
 .piggy{
     background-color:black;
@@ -349,7 +348,7 @@ body {
 	min-width:466px;
 	position: absolute;
 	inset-inline-start:20px;
-	inset-block-start:440px;
+	inset-block-start:460px;
 }
 .safe{
     background-color:black;
@@ -367,7 +366,7 @@ body {
 	min-width:466px;
 	position: absolute;
 	inset-inline-start:20px;
-	inset-block-start:720px;
+	inset-block-start:740px;
 }
 .vault{
     background-color:black;
@@ -385,7 +384,7 @@ body {
 	min-width:466px;
 	position: absolute;
 	inset-inline-start:20px;
-	inset-block-start:1000px;
+	inset-block-start:1020px;
 }
 .forge{
     background-color:black;
@@ -403,7 +402,7 @@ body {
 	min-width:466px;
 	position: absolute;
 	inset-inline-start:20px;
-	inset-block-start:1280px;
+	inset-block-start:1300px;
 }
 .coinAmmo{
     background-color:black;
@@ -423,7 +422,7 @@ body {
 	max-height:200px;
 	position: absolute;
 	inset-inline-start:520px;
-	inset-block-start:190px;
+	inset-block-start:210px;
 }
 .equipment{
     background-color:black;
@@ -439,11 +438,11 @@ body {
 	color:white;
 	width:72px;
 	min-width:72px;
-	height:625px;
-	max-height:990px;
+	height:550px;
+	max-height:550px;
 	position: absolute;
 	inset-inline-start:800px;
-	inset-block-start:100px;
+	inset-block-start:120px;
 }
 .dyes{
     background-color:black;
@@ -459,11 +458,11 @@ body {
 	color:white;
 	width:36;
 	min-width:36;
-	height:625px;
-	max-height:990px;
+	height:550px;
+	max-height:550px;
 	position: absolute;
 	inset-inline-start:761px;
-	inset-block-start:100px;
+	inset-block-start:120px;
 }
 .extraEquip{
     background-color:black;
@@ -479,11 +478,11 @@ body {
 	color:white;
 	width:36;
 	min-width:36;
-	height:323px;
-	max-height:990px;
+	height:280px;
+	max-height:280px;
 	position: absolute;
 	inset-inline-start:700px;
-	inset-block-start:400px;
+	inset-block-start:420px;
 }
 .extraEquipDyes{
     background-color:black;
@@ -499,11 +498,11 @@ body {
 	color:white;
 	width:36;
 	min-width:36;
-	height:323px;
-	max-height:990px;
+	height:280px;
+	max-height:280px;
 	position: absolute;
 	inset-inline-start:660px;
-	inset-block-start:400px;
+	inset-block-start:420px;
 }
 .hotbar{
 	gap: 5px;
@@ -532,7 +531,7 @@ body {
 	display: flex;
 	align-items: center;
 	width: 32px;
-	height: 20px;
+	height: 50px;
 }
 .coinAmmoSlot{
 	justify-content: center;
@@ -573,7 +572,7 @@ body {
   display: inline-block;
 }
 </STYLE>
-"Please don't click the button too fast"
+Please don't click the button too fast
 <button class="survBtn" id="toggle" onclick="clearAndRebuild()">Change to Survival</button>
 &nbsp;See a player's Inv. who is offline (Survival) : 
 <input type="Text" value="Player's name" id="SearchFor" style="display:show;"/><button onclick="buildTinvURL()">Search</button>
