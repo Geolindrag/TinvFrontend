@@ -37,7 +37,7 @@ async function getData(){
 	//console.log(arrayData.length);
 	if(arrayData.length<1){ //if is pvp empty
 		const newDiv = document.createElement("div");
-		newDiv.innerHTML = "<plrDiv><h1>"+loadTo+" is dead</h1><img src='https://media.tenor.com/DqOx5At4J4cAAAAi/explosion.gif'></plrDiv>";
+		newDiv.innerHTML = "<plrDiv><h1>"+loadTo+" is dead/0 Players online</h1><img src='https://media.tenor.com/DqOx5At4J4cAAAAi/explosion.gif'></plrDiv>";
 		const currentDiv = document.getElementById("div1");
 		document.body.insertBefore(newDiv,currentDiv);
 	}else{
@@ -54,9 +54,11 @@ function mapHotbar(itm){
 	//writing manually the HTML again
 	var pageHotbar ="<div class='slotid'>"+
 		(count%10) + 
-		"<div class='item itemslot'>"+
-			"<img style='width:30px' src='https://tinvapi.dark-gaming.com/item_image/"+itm["netId"]+"'>"+
-		"</div>"+
+		"<div class='item itemslot'>";
+		if(itm["netId"]!=0){
+			pageHotbar=pageHotbar+"<img style='width:30px' src='https://tinvapi.dark-gaming.com/item_image/"+itm["netId"]+"'>";
+		}
+		pageHotbar=pageHotbar+"</div>"+
 		"<div align='right'>"+itm["stack"] +"</div>"+
 	"</div>";
 	pageHeader=pageHeader+pageHotbar;
@@ -114,17 +116,23 @@ function clearAndRebuild(){
 
 function clear(){
 	var plrList = document.querySelectorAll("plrDiv");
+	var imgList = document.querySelectorAll("img");
+	var divList = document.querySelectorAll("div");
 	//console.log(plrList);
-	plrList.forEach((plr)=>
-		clearList(plr)
+	imgList.forEach((imgs)=>
+		clearJunk(imgs)
 	);
+	divList.forEach((divs)=>
+		clearJunk(divs)
+	);
+	plrList.forEach((plr)=>
+		clearJunk(plr)
+	);
+
 }
 
-
-
-function clearList(plr){
-	//console.log(plr);
-	plr.remove();
+function clearJunk(junk){
+	junk.remove();
 }
 
 async function buildInventory(plrName){
@@ -138,14 +146,14 @@ async function buildInventory(plrName){
 	}
 	if(!invData.ok&&invData.status!=500){
 		const errDiv = document.createElement("plrDiv");
-		errDiv.innerHTML = "<h1>Tinv API likelly is down or broken, Send a Message to Geolindrag/Make a new issue on Github to see if can be fixed</h1><img src='https://media1.tenor.com/m/os2Fb38u1Y8AAAAd/peralnq.gif'>";
+		errDiv.innerHTML = "<h1>Tinv API likelly is down,broken or i just messed up on something Send a Message to Geolindrag/Make a new issue on Github to see if can be fixed</h1><p>Logs:<br>Status : "+invData.status+"<br>Success : "+invData.ok+"<br>Data : "+plrName+"<br>"+plrName.value+"</p><img src='https://media1.tenor.com/m/os2Fb38u1Y8AAAAd/peralnq.gif'>";
 		const cerrDiv = document.getElementById("plrDiv1");
 		document.body.insertBefore(errDiv,cerrDiv);
 		throw new Error('We got a :' + invData.status);
 		return;
 	}else if (invData.status==500){
 		const errDiv2 = document.createElement("plrDiv");
-		errDiv2.innerHTML = "<h1>Data does not exist,Player is offline or never entered survival in this reset</h1><button class='errorBtn' onclick='getData()'>Return</button><br><br><img src='https://media1.tenor.com/m/-J9hf3DaHUYAAAAd/dessert-desert.gif'>";
+		errDiv2.innerHTML = "<h1>Player exists, But has not entered survival on this reset</h1><button class='errorBtn' onclick='getData()'>Return</button><br><br><img src='https://media1.tenor.com/m/FpgbAT3Ohv4AAAAC/andrew-cunningham-grass.gif'>";
 		const cerrDiv2 = document.getElementById("plrDiv1");
 		document.body.insertBefore(errDiv2,cerrDiv2);
 		throw new Error('We got a :' + invData.status);
@@ -155,7 +163,7 @@ async function buildInventory(plrName){
 	//console.log(plr);
 	if(plr["status"]!=200){
 		const errDiv2 = document.createElement("plrDiv");
-		errDiv2.innerHTML = "<h1>Data does not exist,Player is offline or never entered survival in this reset</h1><button class='errorBtn' onclick='getData()'>Return</button><br><br><img src='https://media1.tenor.com/m/-J9hf3DaHUYAAAAd/dessert-desert.gif'>";
+		errDiv2.innerHTML = "<h1>Data does not exist or Player went offline,Check your spelling if you are searching for an offline player</h1><button class='errorBtn' onclick='getData()'>Return</button><br><br><img src='https://media1.tenor.com/m/-J9hf3DaHUYAAAAd/dessert-desert.gif'>";
 		const cerrDiv2 = document.getElementById("plrDiv1");
 		document.body.insertBefore(errDiv2,cerrDiv2);
 	}
@@ -239,9 +247,11 @@ function mapInv(invData){//for inv format specifically
 	if(count<=50){
 	var pageInventory ="<div class='slotid'>"+
 		"&nbsp;" + 
-		"<div class='item itemslotsmall'>"+
-			"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
-		"</div>"+
+		"<div class='item itemslotsmall'>";
+		if(invData["netId"]!=0){
+			pageInventory=pageInventory+"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+		}
+		pageInventory=pageInventory+"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
 	"</div>";
 		pageHeader=pageHeader+pageInventory;
@@ -250,17 +260,21 @@ function mapInv(invData){//for inv format specifically
 		pageHeader=pageHeader+"</div>"+
 		"<div class='container coinAmmo'>"+
 		"<div class='slotid'>"+
-		"<div class='item coinAmmoSlot'>"+
-			"<img style='width:20px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
-		"</div>"+
+		"<div class='item coinAmmoSlot'>";
+		if(invData["netId"]!=0){
+			pageHeader=pageHeader+"<img style='width:18px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+		}
+		pageHeader=pageHeader+"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
 	"</div>";
 		count=count+1;
 	}else if (count<=58){
 		pageInventory="<div class='slotid'>"+
-		"<div class='item coinAmmoSlot'>"+
-			"<img style='width:20px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
-		"</div>"+
+		"<div class='item coinAmmoSlot'>";
+		if(invData["netId"]!=0){
+			pageInventory=pageInventory+"<img style='width:18px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+		}
+		pageInventory=pageInventory+"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
 	"</div>";
 		pageHeader=pageHeader+pageInventory;
@@ -272,9 +286,11 @@ function mapInv(invData){//for inv format specifically
 function mapStorage(invData){//only shows stack number
 	var pageInventory ="<div class='slotid'>"+
 		"&nbsp;" + 
-		"<div class='item itemslotsmall'>"+
-			"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
-		"</div>"+
+		"<div class='item itemslotsmall'>";
+		if(invData["netId"]!=0){
+			pageInventory=pageInventory+"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+		}
+		pageInventory=pageInventory+"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
 	"</div>";
 	pageHeader=pageHeader+pageInventory;
@@ -283,9 +299,11 @@ function mapStorage(invData){//only shows stack number
 
 function mapEquipment(invData){//Hides stack number
 	var pageInventory ="<div class='slotid'>"+
-		"<div class='item itemslotEquip'>"+
-			"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>"+
-		"</div>"+
+		"<div class='item itemslotEquip'>";
+		if(invData["netId"]!=0){
+			pageInventory=pageInventory+"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+		}
+		pageInventory=pageInventory+"</div>"+
 		"<div align='right'></div>"+
 	"</div>";
 	pageHeader=pageHeader+pageInventory;
@@ -295,7 +313,7 @@ function mapEquipment(invData){//Hides stack number
 function buildTinvURL(){
 	var inputText = document.getElementById("SearchFor");
 	
-	var newURL = tinvURL+"survival/"+(inputText.value.replaceAll(" ","%20")).replaceAll("#","%23");;
+	var newURL = tinvURL+"survival/"+(((((inputText.value.replaceAll(" ","%20")).replaceAll("#","%23")).replaceAll("[","%5B")).replaceAll("/","%2F")).replaceAll(":","%3A")).replaceAll("]","%5D");
 	console.log(newURL);
 	buildInventory(newURL);
 }
@@ -439,8 +457,8 @@ body {
 	color:white;
 	width:72px;
 	min-width:72px;
-	height:550px;
-	max-height:550px;
+	height:545px;
+	max-height:545px;
 	position: absolute;
 	inset-inline-start:800px;
 	inset-block-start:120px;
@@ -459,8 +477,8 @@ body {
 	color:white;
 	width:36;
 	min-width:36;
-	height:550px;
-	max-height:550px;
+	height:545px;
+	max-height:545px;
 	position: absolute;
 	inset-inline-start:761px;
 	inset-block-start:120px;
@@ -479,8 +497,8 @@ body {
 	color:white;
 	width:36;
 	min-width:36;
-	height:280px;
-	max-height:280px;
+	height:270px;
+	max-height:270px;
 	position: absolute;
 	inset-inline-start:700px;
 	inset-block-start:420px;
@@ -499,8 +517,8 @@ body {
 	color:white;
 	width:36;
 	min-width:36;
-	height:280px;
-	max-height:280px;
+	height:270px;
+	max-height:270px;
 	position: absolute;
 	inset-inline-start:660px;
 	inset-block-start:420px;
@@ -540,6 +558,7 @@ body {
 	align-items: center;
 	width: 32px;
 	height: 20px;
+	min-height:20px;
 }
 .slotid{
 	border: 3px solid black;
@@ -572,11 +591,32 @@ body {
   text-decoration: none;
   display: inline-block;
 }
+
+.changelog{
+	border-bottom: 2px dotted white;
+}
+
+.changelog .changes{
+  visibility: hidden;
+  position:absolute;
+  background-color:#555555;
+  text-align: left;
+  border-radius: 3px;
+  padding: 3px 3px;
+  right:0%;
+}
+
+.changelog:hover .changes{
+	visibility: visible;
+}
+
+
 </STYLE>
 Please don't click the button too fast
 <button class="survBtn" id="toggle" onclick="clearAndRebuild()">Change to Survival</button>
 &nbsp;See a player's Inv. who is offline (Survival) : 
 <input type="Text" value="Player's name" id="SearchFor" style="display:show;"/><button onclick="buildTinvURL()">Search</button>
+<smth class="changelog" style="float:right;"> V1.2<span class="changes">Fixed several URL errors<br>Error messages are now more specific<br>API is not called if an item is missing<br>Normalized vertical containers<br>Fixed around 80% of memory leaks</span></smth>
 <br>
 <br>
 
