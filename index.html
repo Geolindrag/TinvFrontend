@@ -27,7 +27,7 @@ async function getData(){
 	var pvpData = await fetch("https://tinvapi.dark-gaming.com/"+loadTo);
 	if(!pvpData.ok){ //if an oopsie happens
 		const newDiv = document.createElement("plrDiv");
-		newDiv.innerHTML = "<h1>Tinv or DG is down, Go to tRealms/TSNG or something</h1><img src='https://media1.tenor.com/m/os2Fb38u1Y8AAAAd/peralnq.gif'>";
+		newDiv.innerHTML = "<h1>Tinv or DG is down, Go to tRealms/TSNG or somewhere else</h1><img src='https://media1.tenor.com/m/os2Fb38u1Y8AAAAd/peralnq.gif'>";
 		const currentDiv = document.getElementById("plrDiv");
 		document.body.insertBefore(newDiv,currentDiv);
 		throw new Error('We got a :' + pvpData.status);
@@ -65,14 +65,34 @@ function mapHotbar(itm){
 	count=count+1;
 }
 
+function mapBuffs(buff){
+	if(buff!=0){
+	if(buff==151||buff==165||buff==308||buff==311||buff==314){
+		alertLevel=alertLevel+1;
+	}
+	var pageBuffs = "<div class='buffs'>"+
+		"<img style='width:30px' src='https://tinvapi.dark-gaming.com/buff_image/"+buff+"'>"+
+		"</div>";
+	pageHeader=pageHeader+pageBuffs;
+		}
+		return;
+}
+
 var count = 1;	//this is just for the slot id
 var pageHeader = "";//cuz i ain't dealing with js parameters, fuck it, public
 var pageFooter=	"</div></div><br>";
+var alertLevel=0; //To determine if its a possible exploiter/Hacker
 function mapData(plr){
+	var hotbarFooter="</div></div></div><br>";
+	alertLevel=0;
+	if(mode!=0){
+	alertLevel=-40;//we dont care if its any other than PvP, as in other dimensions these type of buffs can be obtained normally
+	}
 	count=1;
 	var nickName=(plr["nickname"].replaceAll(" ","%20")).replaceAll("#","%23"); //We do some encoding or everything breaks
 	var hotbar = Object.values(plr["hotbar"]);
 	var headItem = Object.values(plr["headItem"]);
+	var buffs = Object.values(plr["buffs"]);
 	/*console.log(plr);
 	console.log("Starting mapping");
 	console.log(nickName);
@@ -82,7 +102,8 @@ function mapData(plr){
 	console.log(plr["maxHealthWithBuffs"]);
 	console.log(plr["maxManaWithBuffs"]);
 	console.log(hotbar);
-	console.log(headItem[0]);*/
+	console.log(headItem[0]);
+	console.log(buffs);*/
 	const newContainer = document.createElement("plrDiv"); //a place to fill everything we are gonna write
 	//Writting manually the html
 	pageHeader = "<div class='container player'>"+
@@ -93,11 +114,21 @@ function mapData(plr){
 	hotbar.forEach((element)=> //because javascript is javascript we have to make it into another function
 		mapHotbar(element)
 	);
+	pageHeader=pageHeader+"<div class='buffsList'>";
+	buffs.forEach((element)=>
+		mapBuffs(element)
+	);
+	if(alertLevel>1){
+	hotbarFooter="</div></div><div class='warnText'>Possible exploiter/Hacker : Illegal buffs detected </div><a class='reportBtn' href='https://forum.dark-gaming.com/c/report-a-player/21'>Go to forum</a></div></div><br>";
+	}
 	//console.log(pageHeader+pageFooter);
-	newContainer.innerHTML = pageHeader+pageFooter;
+	newContainer.innerHTML = pageHeader+hotbarFooter;
 	const currentDiv = document.getElementById("plrDiv");
 	document.body.insertBefore(newContainer,currentDiv);
 }
+
+
+
 function clearAndRebuild(){
 	const btn = document.getElementById("toggle");
 	clear();
@@ -119,9 +150,9 @@ function clear(){
 	var imgList = document.querySelectorAll("img");
 	var divList = document.querySelectorAll("div");
 	//console.log(plrList);
-	imgList.forEach((imgs)=>
+	/*imgList.forEach((imgs)=>
 		clearJunk(imgs)
-	);
+	);*/
 	divList.forEach((divs)=>
 		clearJunk(divs)
 	);
@@ -153,7 +184,7 @@ async function buildInventory(plrName){
 		return;
 	}else if (invData.status==500){
 		const errDiv2 = document.createElement("plrDiv");
-		errDiv2.innerHTML = "<h1>Player exists, But has not entered survival on this reset</h1><button class='errorBtn' onclick='getData()'>Return</button><br><br><img src='https://media1.tenor.com/m/FpgbAT3Ohv4AAAAC/andrew-cunningham-grass.gif'>";
+		errDiv2.innerHTML = "<h1>Player exists, But has not entered survival on this reset/it left PvP</h1><button class='errorBtn' onclick='getData()'>Return</button><br><br><img src='https://media1.tenor.com/m/FpgbAT3Ohv4AAAAC/andrew-cunningham-grass.gif'>";
 		const cerrDiv2 = document.getElementById("plrDiv1");
 		document.body.insertBefore(errDiv2,cerrDiv2);
 		throw new Error('We got a :' + invData.status);
@@ -329,7 +360,7 @@ body {
     background-color:black;
     border:none;
     border-radius:5px;
-	box-shadow: 0px 0px 10px 1px #22DDFF,
+	box-shadow: 0px 0px 10px 1px #22FFAA,
 	0px 0px 1px #22DDFF;
 	color:white;
 }
@@ -571,6 +602,35 @@ body {
     border-bottom-color: aqua;
 	vertical-align: top;
 }
+.warnText{
+	border: 3px solid black;
+	border:none;
+    border-radius:5px;
+	box-shadow: 0px 0px 1px 1px #DD1660,
+	0px 0px 1px #22DDFF;
+    flood-color: #460910;
+    border-bottom-width: thick;
+    border-bottom-color: red;
+	vertical-align: top;
+	gap: 5px;
+	display: inline-block;
+}
+.buffsList{
+	flex-wrap: wrap;
+	display: flex;
+	align-items: center;
+	flex-grow: 1;
+	border: 3px solid black;
+	border:none;
+    border-radius:5px;
+	box-shadow: 0px 0px 1px 1px #FFAA60,
+	0px 0px 1px #22DDFF;
+    flood-color: #460910;
+    border-bottom-width: thick;
+    border-bottom-color: red;
+	vertical-align: top;
+	gap: 5px;
+}
 
 .survBtn {
   background-color: #005577; 
@@ -587,6 +647,17 @@ body {
   border: none;
   color: white;
   padding: 5px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.reportBtn {
+  background-color: #601099; 
+  border: none;
+  color: white;
+  padding: 1px 11px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -616,7 +687,7 @@ Please don't click the button too fast
 <button class="survBtn" id="toggle" onclick="clearAndRebuild()">Change to Survival</button>
 &nbsp;See a player's Inv. who is offline (Survival) : 
 <input type="Text" value="Player's name" id="SearchFor" style="display:show;"/><button onclick="buildTinvURL()">Search</button>
-<smth class="changelog" style="float:right;"> V1.2<span class="changes">Fixed several URL errors<br>Error messages are now more specific<br>API is not called if an item is missing<br>Normalized vertical containers<br>Fixed around 80% of memory leaks</span></smth>
+<smth class="changelog" style="float:right;"> V1.3<span class="changes">- Images now cache on RAM (its just around 2mb)<br>in order to reduce network traffic<br>- Added support for buffs<br>- Added a button to report players<br>- Said button will appear if the player has illegal buffs</span></smth>
 <br>
 <br>
 
