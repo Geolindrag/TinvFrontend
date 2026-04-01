@@ -145,6 +145,20 @@ function clearAndRebuild(){
 	getData()
 }
 
+function doTrolling(){
+	clear();
+	var body = document.getElementsByTagName('body')[0];
+	var inputbox = document.getElementsByTagName('input')[0];
+	var buttons = document.querySelectorAll("button");
+	buttons.forEach((btns)=>
+		clearJunk(btns)
+	);
+	inputbox.remove();
+	document.getElementById("videotroll").style.display = "block";
+	body.style.backgroundImage = 'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0CXWxjt3Q28EC6mfVD11S7fcEE_3mfGTLhQ&s)';
+	document.getElementById('videotroll').play();return;
+}
+
 function clear(){
 	var plrList = document.querySelectorAll("plrDiv");
 	var imgList = document.querySelectorAll("img");
@@ -343,7 +357,6 @@ function mapEquipment(invData){//Hides stack number
 
 function buildTinvURL(){
 	var inputText = document.getElementById("SearchFor");
-	
 	var newURL = tinvURL+"survival/"+(((((inputText.value.replaceAll(" ","%20")).replaceAll("#","%23")).replaceAll("[","%5B")).replaceAll("/","%2F")).replaceAll(":","%3A")).replaceAll("]","%5D");
 	console.log(newURL);
 	buildInventory(newURL);
@@ -642,6 +655,16 @@ body {
   display: inline-block;
 }
 
+.tsngBtn {
+  background-color: #00AA44; 
+  border: none;
+  color: white;
+  padding: 5px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
 .errorBtn {
   background-color: #770000; 
   border: none;
@@ -684,10 +707,16 @@ body {
 
 </STYLE>
 Please don't click the button too fast
+<!--<button class="survBtn" id="toggle" onclick="clearAndRebuild()">Change to Survival</button>-->
 <button class="survBtn" id="toggle" onclick="clearAndRebuild()">Change to Survival</button>
+<button class="tsngBtn" id="toggle" onclick="doTrolling()">Change to TSNG</button>
 &nbsp;See a player's Inv. who is offline (Survival) : 
 <input type="Text" value="Player's name" id="SearchFor" style="display:show;"/><button onclick="buildTinvURL()">Search</button>
-<smth class="changelog" style="float:right;"> V1.3<span class="changes">- Images now cache on RAM (its just around 2mb)<br>in order to reduce network traffic<br>- Added support for buffs<br>- Added a button to report players<br>- Said button will appear if the player has illegal buffs</span></smth>
+<smth class="changelog" style="float:right;"> V1.4<span class="changes">- Added support for tsng</span></smth>
+<video width="90%" height="90%" class="videot" style="display:none;" id="videotroll">
+    <source src="cat.mp4" type="video/mp4">
+</video>
+
 <br>
 <br>
 
