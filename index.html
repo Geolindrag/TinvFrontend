@@ -56,7 +56,7 @@ function mapHotbar(itm){
 		(count%10) + 
 		"<div class='item itemslot'>";
 		if(itm["netId"]!=0){
-			pageHotbar=pageHotbar+"<img style='width:30px' src='https://tinvapi.dark-gaming.com/item_image/"+itm["netId"]+"'>";
+			pageHotbar=pageHotbar+"<img style='max-width:50px; max-height:64px' src='https://tinvapi.dark-gaming.com/item_image/"+itm["netId"]+"'>";
 		}
 		pageHotbar=pageHotbar+"</div>"+
 		"<div align='right'>"+itm["stack"] +"</div>"+
@@ -82,6 +82,7 @@ var count = 1;	//this is just for the slot id
 var pageHeader = "";//cuz i ain't dealing with js parameters, fuck it, public
 var pageFooter=	"</div></div><br>";
 var alertLevel=0; //To determine if its a possible exploiter/Hacker
+var tabindex=0; // Future
 function mapData(plr){
 	var hotbarFooter="</div></div></div><br>";
 	alertLevel=0;
@@ -108,7 +109,7 @@ function mapData(plr){
 	//Writting manually the html
 	pageHeader = "<div class='container player'>"+
 	"<img src='https://tinvapi.dark-gaming.com/item_image/"+headItem[0]+"'/>"+
-	plr["nickname"]+" &nbsp;&nbsp;♥"+plr["health"]+"/"+plr["maxHealthWithBuffs"]+" &nbsp;&nbsp;★"+plr["mana"]+"/"+plr["maxManaWithBuffs"]+" &nbsp;&nbsp;Registered on :"+ plr["registered"]+ "&nbsp;&nbsp;<button value="+tinvURL+loadTo+"/"+nickName+" onclick='buildInventory(this)'>View Inventory</button>"+
+	plr["nickname"]+" &nbsp;&nbsp;♥"+plr["health"]+"/"+plr["maxHealthWithBuffs"]+" &nbsp;&nbsp;★"+plr["mana"]+"/"+plr["maxManaWithBuffs"]+" &nbsp;&nbsp;Registered on :"+ plr["registered"]+ "&nbsp;&nbsp;<button style='align-self:end;' value="+tinvURL+loadTo+"/"+nickName+" onclick='buildInventory(this)'>View Inventory</button>"+
 	"<br>"+
 	"<div class='container hotbar'>";
 	hotbar.forEach((element)=> //because javascript is javascript we have to make it into another function
@@ -153,9 +154,14 @@ function doTrolling(){
 	buttons.forEach((btns)=>
 		clearJunk(btns)
 	);
+	try {
 	inputbox.remove();
+	}catch(error){
+	console.log("u stoopid");
+	console.error(error);
+	}
 	document.getElementById("videotroll").style.display = "block";
-	body.style.backgroundImage = 'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0CXWxjt3Q28EC6mfVD11S7fcEE_3mfGTLhQ&s)';
+	//body.style.backgroundImage = 'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0CXWxjt3Q28EC6mfVD11S7fcEE_3mfGTLhQ&s)';
 	document.getElementById('videotroll').play();return;
 }
 
@@ -205,7 +211,7 @@ async function buildInventory(plrName){
 		return;
 	}
 	plr = await invData.json();	//Surprise! its again on plain text
-	//console.log(plr);
+	console.log(plr);
 	if(plr["status"]!=200){
 		const errDiv2 = document.createElement("plrDiv");
 		errDiv2.innerHTML = "<h1>Data does not exist or Player went offline,Check your spelling if you are searching for an offline player</h1><button class='errorBtn' onclick='getData()'>Return</button><br><br><img src='https://media1.tenor.com/m/-J9hf3DaHUYAAAAd/dessert-desert.gif'>";
@@ -223,7 +229,7 @@ async function buildInventory(plrName){
 	var dyes = arrayData["dyes"]
 	var extraAccDyes = arrayData["miscDye"]
 	var trash = arrayData["trash"]
-	
+	var buffListPersonal = plr["buffs"]
 	//console.log(inventory);
 	//console.log(equipment);
 	//console.log(extraAcc);
@@ -280,7 +286,9 @@ async function buildInventory(plrName){
 	extraAccDyes.forEach((element)=>
 		mapEquipment(element)
 	);
-	
+	buffListPersonal.forEach((element)=>
+		mapBuffs(element)
+	);
 	
 	newInventory.innerHTML = pageHeader+pageFooter;
 	const currentDiv = document.getElementById("plrDiv");
@@ -294,7 +302,7 @@ function mapInv(invData){//for inv format specifically
 		"&nbsp;" + 
 		"<div class='item itemslotsmall'>";
 		if(invData["netId"]!=0){
-			pageInventory=pageInventory+"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+			pageInventory=pageInventory+"<img style='max-width:26px;max-height:50px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
 		}
 		pageInventory=pageInventory+"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
@@ -376,6 +384,7 @@ body {
 	box-shadow: 0px 0px 10px 1px #22FFAA,
 	0px 0px 1px #22DDFF;
 	color:white;
+	max-width: 686px;
 }
 .inventory{
     background-color:black;
@@ -631,8 +640,8 @@ body {
 .buffsList{
 	flex-wrap: wrap;
 	display: flex;
-	align-items: center;
-	flex-grow: 1;
+	align-items: stretch;
+	flex-grow: 2;
 	border: 3px solid black;
 	border:none;
     border-radius:5px;
@@ -642,7 +651,8 @@ body {
     border-bottom-width: thick;
     border-bottom-color: red;
 	vertical-align: top;
-	gap: 5px;
+	gap: 2px;
+	width:75%;
 }
 
 .survBtn {
@@ -706,15 +716,15 @@ body {
 
 
 </STYLE>
-Please don't click the button too fast
+Please click the button
 <!--<button class="survBtn" id="toggle" onclick="clearAndRebuild()">Change to Survival</button>-->
-<button class="survBtn" id="toggle" onclick="clearAndRebuild()">Change to Survival</button>
-<button class="tsngBtn" id="toggle" onclick="doTrolling()">Change to TSNG</button>
-&nbsp;See a player's Inv. who is offline (Survival) : 
-<input type="Text" value="Player's name" id="SearchFor" style="display:show;"/><button onclick="buildTinvURL()">Search</button>
-<smth class="changelog" style="float:right;"> V1.4<span class="changes">- Added support for tsng</span></smth>
+<button class="survBtn" id="toggle" onclick="clearAndRebuild()" style="display:none;">Change to Survival</button>
+<button class="tsngBtn" id="toggle" onclick="doTrolling()">Nothing here</button>
+&nbsp Survival Tinv is down<!--&nbsp;See a player's Inv. who is offline (Survival) :--> 
+<!--<input type="Text" value="Player's name" id="SearchFor" style="display:show;"/><button onclick="buildTinvURL()">Search</button>-->
+<smth class="changelog" style="float:right;"> V1.5<span class="changes">- Some visual changes to make it look<br> less ugly and eye bleeding<br>- Temporaly removed survival<br>- Removed cornball</span></smth>
 <video width="90%" height="90%" class="videot" style="display:none;" id="videotroll">
-    <source src="cat.mp4" type="video/mp4">
+    <source src="bapple.mp4" type="video/mp4">
 </video>
 
 <br>
