@@ -44,8 +44,12 @@ async function getData(){
 	/*console.log(jsonData);	
 	console.log(Object.values(jsonData));
 	console.log(jsonData["players"]);*/
+	const mainPage= document.createElement("mainPage");
+	mainPage.classList.add('mainpage');
+	const currentMP = document.getElementById("mainPage");
+	document.body.insertBefore(mainPage,currentMP);
 	arrayData.forEach((element) => 
-		mapData(element)
+		mapData(element,mainPage)
 	);
 	}
 }
@@ -56,7 +60,11 @@ function mapHotbar(itm){
 		(count%10) + 
 		"<div class='item itemslot'>";
 		if(itm["netId"]!=0){
-			pageHotbar=pageHotbar+"<img style='max-width:50px; max-height:64px' src='https://tinvapi.dark-gaming.com/item_image/"+itm["netId"]+"'>";
+			if(itm["netId"]<5456){
+				pageHotbar=pageHotbar+"<img style='max-width:50px; max-height:64px' src='https://tinvapi.dark-gaming.com/item_image/"+itm["netId"]+"'>";
+			}else{
+				pageHotbar=pageHotbar+"<img style='max-width:50px; max-height:64px' src='assets/itm/Item_"+itm["netId"]+".png'>";
+			}
 		}
 		pageHotbar=pageHotbar+"</div>"+
 		"<div align='right'>"+itm["stack"] +"</div>"+
@@ -67,15 +75,24 @@ function mapHotbar(itm){
 
 function mapBuffs(buff){
 	if(buff!=0){
-	if(buff==151||buff==165||buff==308||buff==311||buff==314){
+	if(buff==151||buff==165||buff==308||buff==311||buff==314){//Lifedrain,Dryadblessing,Whips
 		alertLevel=alertLevel+1;
+	}else if(buff==80||buff==22){//Darkness,Blindness
+		alertLevel=alertLevel-1;
 	}
+	if(buff<355){//1.4.5 buffs start at 355
 	var pageBuffs = "<div class='buffs'>"+
 		"<img style='width:30px' src='https://tinvapi.dark-gaming.com/buff_image/"+buff+"'>"+
 		"</div>";
+	}else{
+	//console.log("FAILED https://tinvapi.dark-gaming.com/buff_image/"+buff);
+	var pageBuffs = "<div class='buffs'>"+
+		"<img style='width:30px' src='assets/bff/Buff_"+buff+".png'>"+
+		"</div>";
+	}
 	pageHeader=pageHeader+pageBuffs;
-		}
-		return;
+	}
+	return;
 }
 
 var count = 1;	//this is just for the slot id
@@ -83,8 +100,8 @@ var pageHeader = "";//cuz i ain't dealing with js parameters, fuck it, public
 var pageFooter=	"</div></div><br>";
 var alertLevel=0; //To determine if its a possible exploiter/Hacker
 var tabindex=0; // Future
-function mapData(plr){
-	var hotbarFooter="</div></div></div><br>";
+function mapData(plr,mainPage){
+	var hotbarFooter="</div></div></div>";
 	alertLevel=0;
 	if(mode!=0){
 	alertLevel=-40;//we dont care if its any other than PvP, as in other dimensions these type of buffs can be obtained normally
@@ -94,6 +111,7 @@ function mapData(plr){
 	var hotbar = Object.values(plr["hotbar"]);
 	var headItem = Object.values(plr["headItem"]);
 	var buffs = Object.values(plr["buffs"]);
+
 	/*console.log(plr);
 	console.log("Starting mapping");
 	console.log(nickName);
@@ -125,7 +143,9 @@ function mapData(plr){
 	//console.log(pageHeader+pageFooter);
 	newContainer.innerHTML = pageHeader+hotbarFooter;
 	const currentDiv = document.getElementById("plrDiv");
-	document.body.insertBefore(newContainer,currentDiv);
+	//console.log(mainPage);
+	mainPage = mainPage.appendChild(newContainer);
+	//document.body.insertBefore(newContainer,currentDiv);
 }
 
 
@@ -169,6 +189,7 @@ function clear(){
 	var plrList = document.querySelectorAll("plrDiv");
 	var imgList = document.querySelectorAll("img");
 	var divList = document.querySelectorAll("div");
+	var mpList = document.querySelectorAll("mainpage");
 	//console.log(plrList);
 	/*imgList.forEach((imgs)=>
 		clearJunk(imgs)
@@ -178,6 +199,9 @@ function clear(){
 	);
 	plrList.forEach((plr)=>
 		clearJunk(plr)
+	);
+	mpList.forEach((mainp)=>
+		clearJunk(mainp)
 	);
 
 }
@@ -302,7 +326,12 @@ function mapInv(invData){//for inv format specifically
 		"&nbsp;" + 
 		"<div class='item itemslotsmall'>";
 		if(invData["netId"]!=0){
+		
+			if(invData["netId"]<5456){
 			pageInventory=pageInventory+"<img style='max-width:26px;max-height:50px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+			}else{
+			pageInventory=pageInventory+"<img style='max-width:26px;max-height:50px' src='assets/itm/Item_"+invData["netId"]+".png'>";
+			}
 		}
 		pageInventory=pageInventory+"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
@@ -341,7 +370,11 @@ function mapStorage(invData){//only shows stack number
 		"&nbsp;" + 
 		"<div class='item itemslotsmall'>";
 		if(invData["netId"]!=0){
-			pageInventory=pageInventory+"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+			if(invData["netId"]<5456){
+				pageInventory=pageInventory+"<img style='width:26px;max-height:50px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+			}else{
+			pageInventory=pageInventory+"<img style='max-width:26px;max-height:50px' src='assets/itm/Item_"+invData["netId"]+".png'>";
+			}
 		}
 		pageInventory=pageInventory+"</div>"+
 		"<div align='right'>"+invData["stack"] +"</div>"+
@@ -354,7 +387,11 @@ function mapEquipment(invData){//Hides stack number
 	var pageInventory ="<div class='slotid'>"+
 		"<div class='item itemslotEquip'>";
 		if(invData["netId"]!=0){
-			pageInventory=pageInventory+"<img style='width:26px' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+			if(invData["netId"]<5456){
+			pageInventory=pageInventory+"<img style='width:26px;max-height:50px;' src='https://tinvapi.dark-gaming.com/item_image/"+invData["netId"]+"'>";
+			}else{
+			pageInventory=pageInventory+"<img style='max-width:26px;max-height:50px' src='assets/itm/Item_"+invData["netId"]+".png'>";
+			}
 		}
 		pageInventory=pageInventory+"</div>"+
 		"<div align='right'></div>"+
@@ -576,6 +613,12 @@ body {
 	inset-inline-start:660px;
 	inset-block-start:420px;
 }
+.mainpage{
+	display:flex;
+	flex-wrap:wrap;
+	gap: 20px 20px;
+}
+
 .hotbar{
 	gap: 5px;
 	display: flex;
@@ -651,8 +694,8 @@ body {
     border-bottom-width: thick;
     border-bottom-color: red;
 	vertical-align: top;
-	gap: 2px;
-	width:75%;
+	gap: 1px;
+	
 }
 
 .survBtn {
@@ -722,9 +765,9 @@ Please click the button
 <button class="tsngBtn" id="toggle" onclick="doTrolling()">Nothing here</button>
 &nbsp Survival Tinv is down<!--&nbsp;See a player's Inv. who is offline (Survival) :--> 
 <!--<input type="Text" value="Player's name" id="SearchFor" style="display:show;"/><button onclick="buildTinvURL()">Search</button>-->
-<smth class="changelog" style="float:right;"> V1.5<span class="changes">- Some visual changes to make it look<br> less ugly and eye bleeding<br>- Temporaly removed survival<br>- Removed cornball</span></smth>
+<smth class="changelog" style="float:right;"> V1.5.2<span class="changes">- Page now is responsive to your<br>   resolution/window size<br>- Missing images (1.4.5) are loaded <br> from project storage<br>- Tweaked cheats detection<br>- Minor visual fixes<br><br>---Known unfixable issues---<br>- 1.4.5 items aren't shown<br>- Buffs past 21 aren't shown</span></smth>
 <video width="90%" height="90%" class="videot" style="display:none;" id="videotroll">
-    <source src="bapple.mp4" type="video/mp4">
+    <source src="assets/mem/bapple.mp4" type="video/mp4">
 </video>
 
 <br>
